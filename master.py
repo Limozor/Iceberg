@@ -30,7 +30,7 @@ def is_suspicious(file_path):
 
 
 # Активация функций проверки
-check_suffixes = is_suspicious("test.jpg") # Расширения
-check_EOF = check_image_EOF("test.exe") # Только .jpg и .png
+check_suffixes = is_suspicious("тесты/test.jpg") # Расширения
+check_EOF = check_image_EOF("тесты/test.exe") # Только .jpg и .png
 
 print(check_suffixes, check_EOF, sep="\n") # Вывод в терминал результы тестов

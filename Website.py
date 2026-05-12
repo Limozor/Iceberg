@@ -1,3 +1,4 @@
+from info import NoIP_email, NoIP_password, NoIP_domain, NoIP_IP
 from flask import Flask
 import os
 
@@ -15,9 +16,3 @@ if __name__ == '__main__':
     # port=5000 — стандартный порт Flask.
     # debug=False — ОБЯЗАТЕЛЬНО для публичного доступа (в целях безопасности).
     app.run(host='0.0.0.0', port=5000, debug=False)
-
-#NoIP
-#iceberg_officially@internet.ru
-#up6O%iSxmQJt*V
-#iceberg.hopto.org
-#178.206.226.157

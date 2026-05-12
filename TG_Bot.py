@@ -7,7 +7,7 @@ from aiogram.filters.command import Command
 from aiogram.types import Message
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 import os
-from API import Telegram_API
+from info import Telegram_API
 
 last_photo_filename = None
 
