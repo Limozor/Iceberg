@@ -31,7 +31,7 @@ class Algorithm(StatesGroup):
  async def start_message(message: Message, state: FSMContext):
     await state.clear()
     await message.answer(f"""
-    (⊙_⊙;)
+    (⊙_⊙)
 Добро пожаловать {message.from_user.full_name} в Айсберг
 выберите команду для использования нужного сервиса""")
     await message.answer("""Доступные команды:
@@ -86,6 +86,8 @@ class Algorithm(StatesGroup):
  @dp.message(Command("info"))
  async def info_message(message: Message, state: FSMContext):
     await state.clear()
+    await message.answer("""О нас
+    общая инфа о проекте""")
 
 
  @dp.message(Command("ts"))
