@@ -1,4 +1,5 @@
 import asyncio
+import os
 from aiogram import Bot, Dispatcher, types, F
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
@@ -6,8 +7,9 @@ from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.filters.command import Command
 from aiogram.types import Message
 from aiogram.utils.keyboard import InlineKeyboardBuilder
-import os
+
 from info import Telegram_API
+from master import is_suspicious, check_image_EOF
 
 last_photo_filename = None
 
@@ -50,8 +52,6 @@ class Algorithm(StatesGroup):
 
  @dp.message(FileWait.file, F.document)
  async def process_file(message: Message, bot: Bot, state: FSMContext):
-     global last_photo_filename
-
      doc = message.document
      file_name = doc.file_name if doc.file_name else f"{doc.file_unique_id}.bin"
 
@@ -62,10 +62,13 @@ class Algorithm(StatesGroup):
      path = os.path.join(download_dir, file_name)
      await bot.download(doc, destination=path)
 
-     last_photo_filename = file_name
      await message.answer("Начат процесс проверки")
+     # Передаём полный путь
+     result_1 = is_suspicious(path)
+     result_2 = check_image_EOF(path)
+     await message.answer(result_1)
+     await message.answer(result_2)
      await state.clear()
-
 
  @dp.message(Command("games"))
  async def games_menu(message: types.Message, state: FSMContext):
@@ -85,9 +88,9 @@ class Algorithm(StatesGroup):
 
  @dp.message(Command("info"))
  async def info_message(message: Message, state: FSMContext):
-    await state.clear()
     await message.answer("""О нас
     общая инфа о проекте""")
+    await state.clear()
 
 
  @dp.message(Command("ts"))
@@ -112,6 +115,7 @@ if __name__ == "__main__":
     try:
         print("Бот начал работу")
         asyncio.run(main())
+        print("Бот начал работуOh yes")
     except (KeyboardInterrupt, SystemExit):
         pass
     finally:
