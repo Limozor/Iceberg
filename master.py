@@ -1,10 +1,7 @@
 from pathlib import Path
 from VirusTotal import VT_report
 
-master_file  = "tetet.jpg"
 
-
-errors = []
 # Проверка на скрытые данные в конце файла (EOF)
 def check_image_EOF(master_file):
     signatures = [b'\xff\xd9', b'\x00\x00\x49\x45\x4e\x44\xae\x42\x60\x82']
