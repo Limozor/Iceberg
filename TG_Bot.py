@@ -9,7 +9,7 @@ from aiogram.types import Message
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from info import Telegram_API
-from master import is_suspicious, check_image_EOF
+from master import main_function
 
 last_photo_filename = None
 
@@ -63,11 +63,8 @@ class Algorithm(StatesGroup):
      await bot.download(doc, destination=path)
 
      await message.answer("Начат процесс проверки")
-     # Передаём полный путь
-     result_1 = is_suspicious(path)
-     result_2 = check_image_EOF(path)
-     await message.answer(result_1)
-     await message.answer(result_2)
+     master_report = main_function(path)
+     await message.answer(master_report)
      await state.clear()
 
  @dp.message(Command("games"))
@@ -88,8 +85,17 @@ class Algorithm(StatesGroup):
 
  @dp.message(Command("info"))
  async def info_message(message: Message, state: FSMContext):
-    await message.answer("""О нас
-    общая инфа о проекте""")
+    await message.answer("""🧊 Что такое «Айсберг»?
+«Айсберг» — это бесплатный инструмент для проверки картинок на скрытые угрозы. Мы показываем то, что не видно глазу: подозрительные ссылки, скрытый текст и другие «подводные» сюрпризы.
+Почему «Айсберг»? Потому что мемы и изображения — это только верхушка. Настоящая опасность часто прячется глубже. Мы помогаем за пару секунд узнать, безопасен ли файл, и принять решение: открыть, удалить или проверить устройство.
+Сейчас мы работаем с изображениями (PNG, JPEG), но на этом не остановимся. В будущем добавим поддержку видео, документов, таблиц и презентаций.
+Как воспользоваться:
+Загрузите картинку в виде файла и отправь боту
+
+Получите простой отчёт: что внутри, есть ли угрозы и что с ними делать.
+Мы - небольшая команда, которая хочет сделать интернет чуточку безопаснее. Спасибо, что вы с нами! 💙
+
+""")
     await state.clear()
 
 
