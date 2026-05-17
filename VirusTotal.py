@@ -139,5 +139,3 @@ def VT_report(photo_path):
     scanner = VirusTotalScanner(VirusTotal_API)
     result = scanner.scan_photo(photo_path)
     return result
-m = VT_report("tetet.png")
-print(m)
