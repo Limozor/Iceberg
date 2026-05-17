@@ -5,8 +5,10 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.filters.command import Command
-from aiogram.types import Message
+from aiogram.types import Message, FSInputFile, BufferedInputFile
 from aiogram.utils.keyboard import InlineKeyboardBuilder
+import tempfile, os
+from aiogram.types import FSInputFile
 
 from info import Telegram_API
 from master import main_function
@@ -62,9 +64,12 @@ class Algorithm(StatesGroup):
      path = os.path.join(download_dir, file_name)
      await bot.download(doc, destination=path)
 
-     await message.answer("Начат процесс проверки")
+     await message.answer("""Начат процесс проверки
+     Среднее время проверки до 2 минут""")
      master_report = main_function(path)
-     await message.answer(master_report)
+     text_report, file_report = master_report
+     await message.answer(text_report)
+     await message.answer_document(FSInputFile(file_report))
      await state.clear()
 
  @dp.message(Command("games"))
@@ -121,7 +126,6 @@ if __name__ == "__main__":
     try:
         print("Бот начал работу")
         asyncio.run(main())
-        print("Бот начал работуOh yes")
     except (KeyboardInterrupt, SystemExit):
         pass
     finally:
