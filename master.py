@@ -1,7 +1,35 @@
 from pathlib import Path
 import random
+import os
+from hachoir.parser import createParser
 
 from VirusTotal import VT_report
+
+
+def check_file(path):
+    # Проверяем существование файла
+    if not os.path.isfile(path):
+        return "Файл не найден"
+
+    # Проверяем размер
+    if os.path.getsize(path) == 0:
+        return "Файл пустой"
+
+    # Проверяем формат
+    parser = createParser(path)
+
+    if parser is None:
+        return "Формат файла не определён"
+
+    # Проверяем структуру файла
+    try:
+        for _ in parser:
+            pass
+
+    except Exception:
+        return "Файл повреждён"
+
+    return "Файл корректный"
 
 
 # Проверка на скрытые данные в конце файла (EOF)
@@ -31,6 +59,7 @@ def main_function(file_path):
     # Включение функций проверки и передача названия файла
     ci_OEF = check_image_EOF(file_path)
     susp = is_suspicious(file_path)
+    hachoir_res = check_file(file_path)
     vt_result = VT_report(file_path)
 
     # Сохранение полного отчета в файл
@@ -46,6 +75,8 @@ def main_function(file_path):
     
     Проверака расширений: {susp}
     
+    Проверка бинарной структуры файла: {hachoir_res}
+    
     VirusTotal:
     Обнаружено вирусов: {vt_result['malicious']}
     Подозрительно: {vt_result['suspicious']}
@@ -58,10 +89,11 @@ def main_function(file_path):
     report_path.write_text(report_file_data, encoding="utf-8")
 
     # Возврат отчета
-    return {
+    return (
         f"""Краткий отчет о выполненой проверке:
         OEF проверка: {ci_OEF}
         Проверака расширений: {susp}
+        Проверка бинарной структуры: {hachoir_res}
         Проверка с помощью VirusTotal": {vt_result['report_url']}""",
         str(report_path)
-    }
+)
