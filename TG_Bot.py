@@ -1,19 +1,18 @@
-import asyncio
 import os
+import asyncio
 from aiogram import Bot, Dispatcher, types, F
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.filters.command import Command
-from aiogram.types import Message, FSInputFile, BufferedInputFile
+from aiogram.types import Message
 from aiogram.utils.keyboard import InlineKeyboardBuilder
-import tempfile, os
 from aiogram.types import FSInputFile
 
 from info import Telegram_API
 from master import main_function
+from Cheak_link import check_url_safety
 
-last_photo_filename = None
 
 bot = Bot(token=Telegram_API)
 dp = Dispatcher(storage=MemoryStorage())
@@ -26,8 +25,10 @@ emoji = {"Автомат": "🎰",
          "Боулинг": "🎳"
           }
 
-class FileWait(StatesGroup):
+class Master_Class(StatesGroup):
     file = State()
+    link = State()
+
 
 class Algorithm(StatesGroup):
 
@@ -47,12 +48,13 @@ class Algorithm(StatesGroup):
     /id - информация о вас
     """)
 
+
  @dp.message(Command("checkfile"))
  async def file_message(message: Message, state: FSMContext):
      await message.answer("Отправьте файл для проверки")
-     await state.set_state(FileWait.file)
+     await state.set_state(Master_Class.file)
 
- @dp.message(FileWait.file, F.document)
+ @dp.message(Master_Class.file, F.document)
  async def process_file(message: Message, bot: Bot, state: FSMContext):
      doc = message.document
      file_name = doc.file_name if doc.file_name else f"{doc.file_unique_id}.bin"
@@ -71,6 +73,23 @@ class Algorithm(StatesGroup):
      await message.answer(text_report)
      await message.answer_document(FSInputFile(file_report))
      await state.clear()
+
+
+ @dp.message(Command("checklink"))
+ async def start_command(message: types.Message, state: FSMContext):
+     await message.answer("Отправьте ссылку на сайт для проверки")
+     await state.set_state(Master_Class.link)
+
+ @dp.message(Master_Class.link)
+ async def process_link(message: types.Message, state: FSMContext):
+     link = message.text.strip()
+     await state.update_data(link=link)
+     link_check_result = check_url_safety(link)
+     await message.answer(f"""Отчет о проверке:
+    Статус: {link_check_result["status"]}
+    Проверяемая ссылка: {link}""")
+     await state.clear()
+
 
  @dp.message(Command("games"))
  async def games_menu(message: types.Message, state: FSMContext):
