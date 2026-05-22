@@ -92,7 +92,7 @@ def main_function(file_path):
     return (
         f"""Краткий отчет о выполненой проверке:
         OEF проверка: {ci_OEF}
-        Проверака расширений: {susp}
+        Проверка расширений: {susp}
         Проверка бинарной структуры: {hachoir_res}
         Проверка с помощью VirusTotal": {vt_result['report_url']}""",
         str(report_path)

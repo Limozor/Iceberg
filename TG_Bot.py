@@ -42,6 +42,7 @@ class Algorithm(StatesGroup):
     await message.answer("""Доступные команды:
     /start - перезапуск
     /checkfile - Проверка файла 
+    /checklink - Проверка ссылок
     /games - Игры
     /info - О нас 
     /ts - техподдержка
@@ -51,6 +52,7 @@ class Algorithm(StatesGroup):
 
  @dp.message(Command("checkfile"))
  async def file_message(message: Message, state: FSMContext):
+     await state.clear()
      await message.answer("Отправьте файл для проверки")
      await state.set_state(Master_Class.file)
 
@@ -77,6 +79,7 @@ class Algorithm(StatesGroup):
 
  @dp.message(Command("checklink"))
  async def start_command(message: types.Message, state: FSMContext):
+     await state.clear()
      await message.answer("Отправьте ссылку на сайт для проверки")
      await state.set_state(Master_Class.link)
 
@@ -109,6 +112,7 @@ class Algorithm(StatesGroup):
 
  @dp.message(Command("info"))
  async def info_message(message: Message, state: FSMContext):
+    await state.clear()
     await message.answer("""🧊 Что такое «Айсберг»?
 «Айсберг» — это бесплатный инструмент для проверки картинок на скрытые угрозы. Мы показываем то, что не видно глазу: подозрительные ссылки, скрытый текст и другие «подводные» сюрпризы.
 Почему «Айсберг»? Потому что мемы и изображения — это только верхушка. Настоящая опасность часто прячется глубже. Мы помогаем за пару секунд узнать, безопасен ли файл, и принять решение: открыть, удалить или проверить устройство.
@@ -127,6 +131,7 @@ class Algorithm(StatesGroup):
  async def ts_message(message: Message, state: FSMContext):
     await state.clear()
     await message.answer("Для получения технической поддержки обратитесь к: @Limozor")
+    await state.clear()
 
 
  @dp.message(Command("id"))  # только текст добавить
@@ -135,6 +140,7 @@ class Algorithm(StatesGroup):
     await message.answer(message.from_user.full_name)
     await message.answer(str(message.from_user.username))
     await message.answer(str(message.from_user.id))
+    await state.clear()
 
 
 async def main():
