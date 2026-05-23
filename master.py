@@ -1,8 +1,9 @@
+#Каз,нел пом
 from pathlib import Path
 import random
 import os
 from hachoir.parser import createParser
-
+from EXIF import check_photo_anomalies
 from VirusTotal import VT_report
 
 
@@ -61,6 +62,7 @@ def main_function(file_path):
     susp = is_suspicious(file_path)
     hachoir_res = check_file(file_path)
     vt_result = VT_report(file_path)
+    exif_anomal = check_photo_anomalies(file_path)
 
     # Сохранение полного отчета в файл
     report_dir = Path("reports")
@@ -76,6 +78,8 @@ def main_function(file_path):
     Проверака расширений: {susp}
     
     Проверка бинарной структуры файла: {hachoir_res}
+    
+    Проверка аномалий в EXIF фотографии: {exif_anomal}
     
     VirusTotal:
     Обнаружено вирусов: {vt_result['malicious']}
@@ -93,6 +97,7 @@ def main_function(file_path):
         f"""Краткий отчет о выполненой проверке:
         OEF проверка: {ci_OEF}
         Проверка расширений: {susp}
+        Проверка аномалий в EXIF фотографии: {exif_anomal}
         Проверка бинарной структуры: {hachoir_res}
         Проверка с помощью VirusTotal": {vt_result['report_url']}""",
         str(report_path)
