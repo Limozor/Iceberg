@@ -27,13 +27,13 @@ def check_url_safety(url_to_check):
         response.raise_for_status()
 
         if not response.text.strip() or response.json() == {}:
-            return {"status": "safe", "message": f"Ссылка {url_to_check} безопасна."}
+            return {"status": "Безопасно", "message": f"Проверяемая ссылка: {url_to_check}"}
 
         data = response.json()
         if "matches" in data:
             threats = [match["threatType"] for match in data["matches"]]
             return {
-                "status": "threat",
+                "status": "Опасно",
                 "message": f"Ссылка {url_to_check} ОПАСНА!",
                 "threats": threats,
             }

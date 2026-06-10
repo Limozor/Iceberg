@@ -31,22 +31,21 @@ SUSPICIOUS_TAGS = [
     'XPTitle', 'XPComment', 'XPKeywords', 'XPSubject'
 ]
 
+REPORT = [False, False]
 
-def check_photo_anomalies(file_path):
-    """
-    Проверяет фото на аномалии EXIF.
-    Возвращает строку с отчётом или None, если аномалий нет.
-    """
+def Check_EXIF(file_path):
     # 1. Пытаемся открыть и прочитать EXIF
     try:
         with Image.open(file_path) as img:
             raw_exif = img._getexif()
     except Exception as e:
-        return f"❌ Ошибка при открытии '{file_path}': {e}"
+        REPORT[1] = True
+        REPORT.append(f"❌ Ошибка при открытии '{file_path}': {e}")
+        return REPORT
 
     # 2. Если EXIF нет
     if not raw_exif:
-        return None  # нет данных то нет аномалий
+        return REPORT  # нет данных то нет аномалий
 
     # 3. Преобразуем EXIF в читаемый словарь
     exif_dict = {}
@@ -60,6 +59,7 @@ def check_photo_anomalies(file_path):
     # Нестандартные теги
     for tag in exif_dict.keys():
         if tag not in NORMAL_TAGS:
+            REPORT[1] = True
             anomalies.append(f"🔍 Нестандартный тег: {tag}")
 
     # Подозрительный контент
@@ -68,21 +68,15 @@ def check_photo_anomalies(file_path):
             value = str(exif_dict[tag]).lower()
             for kw in SUSPICIOUS_KEYWORDS:
                 if kw in value:
+                    REPORT[0] = True
                     anomalies.append(f"⚠️ Подозрительный контент в теге {tag}: {value[:100]}")
                     break
 
     # Слишком много тегов
     if len(exif_dict) > 80:
+        REPORT[1] = True
         anomalies.append(f"📦 Необычно много EXIF-тегов: {len(exif_dict)}")
 
-    # GPS
-    if 'GPSInfo' in exif_dict:
-        anomalies.append("📍 Обнаружены GPS-координаты")
-
-    # 6. Формируем результат
-    if not anomalies:
-        return "Аномалии не обнаружены"
-
-    result_lines = [f"🚨 Файл: {file_path}"]
-    result_lines.extend(f"   {a}" for a in anomalies)
-    return "\n".join(result_lines)
+    result_lines = []
+    result_lines.extend(f"{a}" for a in anomalies)
+    return REPORT, "\n".join(result_lines)
