@@ -32,7 +32,7 @@ def Check_General(path):
 
 def Cheak_Suspicious(master_file):
     report = [False, False]
-    safe_suffixes = {'.png', '.jpg', '.jpeg'}
+    safe_suffixes = {'.png', '.jpg', '.jpeg', ".webp", ".gif", ".heic", ".mp3", ".mp4", ".mp5"}
     path = Path(master_file)
     suffixes = path.suffixes
     if len(suffixes) >= 2:
