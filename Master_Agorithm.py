@@ -1,7 +1,7 @@
 #Каз,нел пом
 import random
 from pathlib import Path
-from pythonping import ping
+from ping3 import ping
 from EXIF import Check_EXIF
 from VirusTotal import Virus_Total_Scan
 from Algorithms import Check_General, Check_EOF, Cheak_Suspicious
@@ -19,7 +19,8 @@ def Processing_Report(file_path):
     Report_UNSAFE = []
     Report_ODD = []
 
-    if ping("virustotal.com").success():
+    dostup = isinstance(ping("virustotal.com"), float) 
+    if dostup:
         VirusTotal_Universal_res = Virus_Total_Scan(file_path)
         if VirusTotal_Universal_res[1] == True:
             Report_UNSAFE.extend(VirusTotal_Universal_res[3:])
