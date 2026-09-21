@@ -1,0 +1,2 @@
+BAD_LINK = ["http://testsafebrowsing.appspot.com/s/malware.html", "http://testsafebrowsing.appspot.com/s/phishing.html", "https://secure.eicar.org/eicar.com.txt"]
+GOOD_LINK = ["google.com", "yandex.ru", "web.telegram.org", "virustotal.com"]
